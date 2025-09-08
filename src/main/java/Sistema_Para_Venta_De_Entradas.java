@@ -119,16 +119,16 @@ public class Sistema_Para_Venta_De_Entradas {
             for (int indice = 0; indice <= TEATRO_FILAS.length; indice++) {
                 switch (indice) {
                     case 0:
-                        System.out.print(ESPACIO + ESPACIO + ESPACIO);
+                        System.out.print(ESPACIO + ESPACIO);
                         break;
-                    case 1, 3, 6, 8, 10:
+                    case 1, 3, 7, 10:
                         System.out.print(ESPACIO + indice + ESPACIO);
                         break;
-                    case 2, 7:
-                        System.out.print(ESPACIO + ESPACIO + ESPACIO + indice + ESPACIO + ESPACIO + ESPACIO);
+                    case 2, 6, 8:
+                        System.out.print(ESPACIO + ESPACIO + indice + ESPACIO + ESPACIO);
                         break;
                     case 4, 5, 9:
-                        System.out.print(ESPACIO + ESPACIO + indice + ESPACIO + ESPACIO);
+                        System.out.print(ESPACIO + ESPACIO + indice + ESPACIO);
                         break;
                 }
             }
