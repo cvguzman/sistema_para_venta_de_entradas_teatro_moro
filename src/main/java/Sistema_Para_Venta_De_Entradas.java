@@ -94,6 +94,12 @@ public class Sistema_Para_Venta_De_Entradas {
         do {
             if (ENTRADA.hasNextInt()) {
                 opcionElegida = ENTRADA.nextInt();
+
+                // Opción de Salir termina el programa.
+                if (opcionElegida == 2) {
+                    return;
+                }
+
                 puedeAvanzar = opcionElegida > 0 && opcionElegida <= OPCIONES_PASO1.length;
             } else {
                 ENTRADA.next();
