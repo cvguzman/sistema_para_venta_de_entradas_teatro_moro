@@ -8,23 +8,51 @@ public class Sistema_Para_Venta_De_Entradas {
         // Instrucciones para mostrar en la consola.
         final var TEXTO_INICIO = "Bienvenido al sistema de entradas del Teatro Moro";
         final var TEXTO_PASO1 = "Seleccione el proceso que desea realizar, ingresando un número:";
+        final var TEXTO_PASO2 = """
+                ::::::: RESERVA DE ASIENTOS:::::::
+                Seleccione un asiento ingresando la letra de la fila y el número de la columna (ejemplo: C3):
+                Disponibilidad: [_] Disponible, [ X ] No disponible
+                """;
+        final var TEXTO_PASO3 = "Ingrese su edad:";
 
         // Opciones para elegir en la consola.
         final String[] OPCIONES_PASO1 = {"Comprar entrada", "Salir"};
-
 
         // Utilitarios
         final var ESPACIO = " ";
         final var PUNTO = ".";
         final var ENTRADA = new Scanner(System.in);
+        final var ASIENTO_DISPONIBLE = "[_]";
+        final var ASIENTO_NO_DISPONIBLE = "[X]";
+        final var DESCUENTO_ESTUDIANTE = 30; // Este número tiene contexto de porcentaje.
 
         // Errores
-        final var ERROR_OPCION_INCORRECTA = "Error: Por favor, ingrese una opción válida";
+        final var ERROR_OPCION_INCORRECTA = "Error: Por favor, ingrese una opción válida.";
+        final var ERROR_ASIENTO_INVALIDO = "Error: Por favor, ingrese una fila y columna válida.";
+        final var ERROR_EDAD_INVALIDA = "Error: Por favor, ingrese una edad válida.";
+
+        // Mapa del teatro
+        final String[] TEATRO_FILAS = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+        final String[] TEATRO_COLUMNAS =  {
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE,
+                ASIENTO_DISPONIBLE
+        };
 
         // ::::::::::::::: VARIABLES :::::::::::::::
 
         int opcionElegida;
+        String asientoElegido;
+        boolean esMenorDeEdad = false;
         boolean puedeAvanzar = false;
+        boolean compraFinalizada = false;
 
         // ::::::::::::::: PASO 1 :::::::::::::::
 
@@ -42,11 +70,80 @@ public class Sistema_Para_Venta_De_Entradas {
         do {
             if (ENTRADA.hasNextInt()) {
                 opcionElegida = ENTRADA.nextInt();
+                ENTRADA.nextLine();
                 puedeAvanzar = opcionElegida > 0 && opcionElegida <= OPCIONES_PASO1.length;
             } else {
                 ENTRADA.next();
             }
             if (!puedeAvanzar) {  System.out.println(ERROR_OPCION_INCORRECTA); }
+        } while (!puedeAvanzar);
+
+        // ::::::::::::::: PASO 2 :::::::::::::::
+
+        System.out.println(TEXTO_PASO2);
+
+        for (int indice = 0; indice <= TEATRO_FILAS.length; indice++) {
+            switch (indice) {
+                case 0: System.out.print(ESPACIO + ESPACIO + ESPACIO); break;
+                case 1, 3, 6, 8, 10: System.out.print(ESPACIO + indice + ESPACIO); break;
+                case 2, 7: System.out.print(ESPACIO + ESPACIO + ESPACIO + indice + ESPACIO + ESPACIO + ESPACIO); break;
+                case 4, 5, 9: System.out.print(ESPACIO + ESPACIO + indice + ESPACIO + ESPACIO); break;
+            }
+        }
+
+       System.out.println(ESPACIO);
+        
+        for (String fila: TEATRO_FILAS) {
+            String filaCompleta = fila + ESPACIO;
+            for (String asiento: TEATRO_COLUMNAS) {
+                filaCompleta = filaCompleta + asiento + ESPACIO;
+            }
+            System.out.println(filaCompleta);
+        }
+
+        System.out.println("Ingrese asiento (ej: B5):");
+
+        do {
+            if (ENTRADA.hasNextLine()) {
+                asientoElegido = ENTRADA.nextLine().trim().toUpperCase();
+
+                if (asientoElegido.length() > 1 && asientoElegido.length() <= 3) {
+                    char filaElegida = asientoElegido.charAt(0);
+                    int columnaElegida = Integer.parseInt(asientoElegido.substring(1));
+
+                    for (String fila: TEATRO_FILAS) {
+                        if (fila.equals(String.valueOf(filaElegida))) {
+                            puedeAvanzar = columnaElegida > 0 && columnaElegida <= TEATRO_COLUMNAS.length;
+                            break;
+                        } else {
+                            puedeAvanzar = false;
+                        }
+                    }
+                } else {
+                    puedeAvanzar = false;
+                }
+            } else {
+                ENTRADA.nextLine();
+            }
+            if (!puedeAvanzar) {  System.out.println(ERROR_ASIENTO_INVALIDO); }
+        } while (!puedeAvanzar);
+
+        // ::::::::::::::: PASO 3 :::::::::::::::
+
+        System.out.println(TEXTO_PASO3);
+
+        do {
+            if (ENTRADA.hasNextInt()) {
+                opcionElegida = ENTRADA.nextInt();
+                ENTRADA.nextLine();
+                if (opcionElegida >= 12 && opcionElegida < 18) {
+                   esMenorDeEdad = true;
+                }
+                puedeAvanzar = opcionElegida >= 12 && opcionElegida < 100;
+            } else {
+                ENTRADA.next();
+            }
+            if (!puedeAvanzar) {  System.out.println(ERROR_EDAD_INVALIDA); }
         } while (!puedeAvanzar);
     }
 }
