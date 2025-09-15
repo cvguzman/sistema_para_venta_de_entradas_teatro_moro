@@ -2,70 +2,30 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class Sistema_Para_Venta_De_Entradas {
     public static void main(String[] args) {
-
-        // ::::::::::::::: CONSTANTES :::::::::::::::
-
-        // Instrucciones para mostrar en la consola.
-        final var TEXTO_INICIO = "Bienvenido al sistema de entradas del Teatro Moro";
-        final var TEXTO_PASO1 = "Seleccione el proceso que desea realizar. Ingrese un número:";
-        final var TEXTO_PASO2 = """
-                ::::::: RESERVA DE ASIENTOS:::::::
-                Seleccione un asiento ingresando la letra de la fila y el número de la columna:
-                Disponibilidad: [_] Disponible, [ X ] No disponible
-                """;
-        final var TEXTO_PASO3 = "Ingrese su edad:";
-        final var TEXTO_PASO4 = "¿Desea realizar otra compra? Seleccione una opción ingresando su número:";
-        final var TEXTO_SALIDA = "Gracias por su compra, disfrute de la función.";
-
-        final var TEXTO_PROMOCIONES = """
-                ::::::: PROMOCIONES :::::::
-                - 10% para estudiantes (desde los 12, hasta 17 años).
-                - 15% para tercera edad (desde los 60 años).
-                - Lleva 3 entradas por el precio de 2.
-                """;
-        final var TEXTO_ELIMINACION = """
-                ::::::: ELIMINACION DE ENTRADAS :::::::
-                Elimine un asiento ingresando la letra de la fila y el número de la columna:
-                """;
-
-        // Opciones para elegir en la consola.
-        final String[] OPCIONES_PASO1 = {"Comprar entrada", "Promociones", "Eliminación de entradas", "Salir"};
-        final String[] OPCIONES_PASO4 = {"Realizar otra compra", "Salir"};
-
-        // Utilitarios
-        final var ESPACIO = " ";
-        final var PUNTO = ".";
         final var ENTRADA = new Scanner(System.in);
-        final var ASIENTO_DISPONIBLE = "[_]";
-        final var ASIENTO_NO_DISPONIBLE = "[X]";
-        final var DESCUENTO_MENOR_DE_EDAD = 10; // Este número tiene contexto de porcentaje.
-        final var DESCUENTO_TERCERA_EDAD = 15; // Este número tiene contexto de porcentaje.
-        final int[] PRECIOS = {35000, 25000, 15000, 11000};
         Locale chile = Locale.forLanguageTag("es-CL"); // Necesario para que el formateador de número sepa adaptarse a precios CLP.
         NumberFormat formatoCLP = NumberFormat.getCurrencyInstance(chile);
-
-        // Errores
-        final var ERROR_OPCION_INCORRECTA = "Error: Por favor, ingrese una opción válida.";
-        final var ERROR_ASIENTO_INVALIDO = "Error: Por favor, ingrese una fila y una columna válidas y disponibles.";
-        final var ERROR_EDAD_INVALIDA = "Error: Por favor, ingrese una edad válida.";
-        final var ERROR_SIN_ASIENTOS_RESERVADOS = "Error: Actualmente no tienes asientos reservados.";
 
         // Mapa del teatro
         final String[] TEATRO_FILAS = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         final String[] TEATRO_COLUMNAS = {
-                ASIENTO_NO_DISPONIBLE,
-                ASIENTO_NO_DISPONIBLE,
-                ASIENTO_DISPONIBLE,
-                ASIENTO_DISPONIBLE,
-                ASIENTO_DISPONIBLE,
-                ASIENTO_DISPONIBLE,
-                ASIENTO_DISPONIBLE,
-                ASIENTO_NO_DISPONIBLE,
-                ASIENTO_NO_DISPONIBLE,
-                ASIENTO_NO_DISPONIBLE
+                Constantes.ASIENTO_NO_DISPONIBLE,
+                Constantes.ASIENTO_NO_DISPONIBLE,
+                Constantes.ASIENTO_DISPONIBLE,
+                Constantes.ASIENTO_DISPONIBLE,
+                Constantes.ASIENTO_DISPONIBLE,
+                Constantes.ASIENTO_DISPONIBLE,
+                Constantes.ASIENTO_DISPONIBLE,
+                Constantes.ASIENTO_NO_DISPONIBLE,
+                Constantes.ASIENTO_NO_DISPONIBLE,
+                Constantes.ASIENTO_NO_DISPONIBLE
         };
 
         // ::::::::::::::: VARIABLES :::::::::::::::
@@ -96,16 +56,16 @@ public class Sistema_Para_Venta_De_Entradas {
             // ::::::::::::::: PASO 1 :::::::::::::::
 
             do {
-                System.out.println(TEXTO_INICIO);
-                System.out.println(ESPACIO);
+                System.out.println(Constantes.Instrucciones.TEXTO_INICIO);
+                System.out.println(Constantes.ESPACIO);
 
-                System.out.println(TEXTO_PASO1);
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO1);
 
-                for (int indice = 0; indice < OPCIONES_PASO1.length; indice++) {
+                for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO1.length; indice++) {
                     System.out.println((indice + 1)
-                            + PUNTO
-                            + ESPACIO
-                            + OPCIONES_PASO1[indice]);
+                            + Constantes.PUNTO
+                            + Constantes.ESPACIO
+                            + Constantes.Opciones.OPCIONES_PASO1[indice]);
                 }
 
                 if (ENTRADA.hasNextInt()) {
@@ -113,28 +73,28 @@ public class Sistema_Para_Venta_De_Entradas {
 
                     switch (opcionElegida) {
                         case 2:
-                            System.out.println(TEXTO_PROMOCIONES);
+                            System.out.println(Constantes.Instrucciones.TEXTO_PROMOCIONES);
                             break;
                         case 3:
                             if (asientosReservados.size() > 0) {
-                                System.out.println(TEXTO_ELIMINACION);
+                                System.out.println(Constantes.Instrucciones.TEXTO_ELIMINACION);
                                 for (String asiento: asientosReservados) {
-                                    System.out.println("-" + ESPACIO + asiento);
+                                    System.out.println("-" + Constantes.ESPACIO + asiento);
                                 }
                             } else {
-                                System.out.println(ERROR_SIN_ASIENTOS_RESERVADOS);
+                                System.out.println(Constantes.Errores.ERROR_SIN_ASIENTOS_RESERVADOS);
                             }
                             break;
                         default:
                             // Opción de Salir termina el programa.
                             return;
                     }
-                    puedeAvanzar = opcionElegida > 0 && opcionElegida <= OPCIONES_PASO1.length;
+                    puedeAvanzar = opcionElegida > 0 && opcionElegida <= Constantes.Opciones.OPCIONES_PASO1.length;
                 } else {
                     ENTRADA.next();
                 }
                 if (!puedeAvanzar) {
-                    System.out.println(ERROR_OPCION_INCORRECTA);
+                    System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA);
                 }
             } while (!puedeAvanzar);
 
@@ -142,39 +102,39 @@ public class Sistema_Para_Venta_De_Entradas {
             do {
                 // ::::::::::::::: PASO 2 :::::::::::::::
 
-                System.out.println(TEXTO_PASO2);
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO2);
 
                 // Dibujamos el mapa del teatro.
                 for (int indice = 0; indice <= TEATRO_FILAS.length; indice++) {
                     switch (indice) {
                         case 0:
-                            System.out.print(ESPACIO + ESPACIO);
+                            System.out.print(Constantes.ESPACIO + Constantes.ESPACIO);
                             break;
                         case 1, 3, 7, 10:
-                            System.out.print(ESPACIO + indice + ESPACIO);
+                            System.out.print(Constantes.ESPACIO + indice + Constantes.ESPACIO);
                             break;
                         case 2, 6, 8:
-                            System.out.print(ESPACIO + ESPACIO + indice + ESPACIO + ESPACIO);
+                            System.out.print(Constantes.ESPACIO + Constantes.ESPACIO + indice + Constantes.ESPACIO + Constantes.ESPACIO);
                             break;
                         case 4, 5, 9:
-                            System.out.print(ESPACIO + ESPACIO + indice + ESPACIO);
+                            System.out.print(Constantes.ESPACIO + Constantes.ESPACIO + indice + Constantes.ESPACIO);
                             break;
                     }
                 }
 
-                System.out.println(ESPACIO);
+                System.out.println(Constantes.ESPACIO);
 
                 for (int indice = 0; indice < TEATRO_FILAS.length; indice++) {
-                    String filaCompleta = TEATRO_FILAS[indice] + ESPACIO;
+                    String filaCompleta = TEATRO_FILAS[indice] + Constantes.ESPACIO;
                     for (String asiento : grupoColumnas[indice]) {
-                        filaCompleta = filaCompleta + asiento + ESPACIO;
+                        filaCompleta = filaCompleta + asiento + Constantes.ESPACIO;
                     }
                     // Validamos para agregar la categoría asociada a la fila.
                     filaCompleta = switch (indice) {
-                        case 0, 1 -> filaCompleta + ESPACIO +         "|      V.I.P.       |";
-                        case 2, 3 -> filaCompleta + ESPACIO +         "| PLATEA BAJA |";
-                        case 4, 5, 6, 7 -> filaCompleta + ESPACIO + "| PLATEA ALTA |";
-                        case 8, 9 -> filaCompleta + ESPACIO +         "|     PALCO      |";
+                        case 0, 1 -> filaCompleta + Constantes.ESPACIO +         "|      V.I.P.       |";
+                        case 2, 3 -> filaCompleta + Constantes.ESPACIO +         "| PLATEA BAJA |";
+                        case 4, 5, 6, 7 -> filaCompleta + Constantes.ESPACIO + "| PLATEA ALTA |";
+                        case 8, 9 -> filaCompleta + Constantes.ESPACIO +         "|     PALCO      |";
                         default -> filaCompleta;
                     };
                     System.out.println(filaCompleta);
@@ -195,7 +155,7 @@ public class Sistema_Para_Venta_De_Entradas {
                                 int columnaElegida = Integer.parseInt(asientoElegido.substring(1));
 
                                 if (columnaElegida > 10 || columnaElegida < 1) {
-                                    System.out.println(ERROR_ASIENTO_INVALIDO);
+                                    System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
                                     puedeAvanzar = false;
                                     continue;
                                 }
@@ -206,10 +166,10 @@ public class Sistema_Para_Venta_De_Entradas {
 
                                         // Validamos que el asiento no se encuentre ocupado.
                                         // Si está disponible, lo marcamos como no disponible para futuras compras.
-                                        if (grupoColumnas[indice][columnaElegida - 1].equals(ASIENTO_NO_DISPONIBLE)) {
+                                        if (grupoColumnas[indice][columnaElegida - 1].equals(Constantes.ASIENTO_NO_DISPONIBLE)) {
                                             puedeAvanzar = false;
                                         } else {
-                                            grupoColumnas[indice][columnaElegida - 1] = ASIENTO_NO_DISPONIBLE;
+                                            grupoColumnas[indice][columnaElegida - 1] = Constantes.ASIENTO_NO_DISPONIBLE;
                                             // Guardamos el indice de la fila para luego conseguir su precio correspondiente.
                                             indiceDeFila = indice;
                                             puedeAvanzar = true;
@@ -230,13 +190,13 @@ public class Sistema_Para_Venta_De_Entradas {
                         ENTRADA.nextLine();
                     }
                     if (!puedeAvanzar) {
-                        System.out.println(ERROR_ASIENTO_INVALIDO);
+                        System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
                     }
                 } while (!puedeAvanzar);
 
                 // ::::::::::::::: PASO 3 :::::::::::::::
 
-                System.out.println(TEXTO_PASO3);
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO3);
 
                 do {
                     if (ENTRADA.hasNextInt()) {
@@ -252,7 +212,7 @@ public class Sistema_Para_Venta_De_Entradas {
                         ENTRADA.next();
                     }
                     if (!puedeAvanzar) {
-                        System.out.println(ERROR_EDAD_INVALIDA);
+                        System.out.println(Constantes.Errores.ERROR_EDAD_INVALIDA);
                     }
                 } while (!puedeAvanzar);
 
@@ -263,18 +223,18 @@ public class Sistema_Para_Venta_De_Entradas {
                 int precioFinal;
 
                 precioCategoria = switch (indiceDeFila) {
-                    case 0, 1 -> PRECIOS[0]; // VIP
-                    case 2, 3 -> PRECIOS[1]; // PLATEA BAJA
-                    case 4, 5, 6, 7 -> PRECIOS[2]; // PLATEA ALTA
-                    case 8, 9 -> PRECIOS[3]; // PALCO
+                    case 0, 1 -> Constantes.PRECIOS[0]; // VIP
+                    case 2, 3 -> Constantes.PRECIOS[1]; // PLATEA BAJA
+                    case 4, 5, 6, 7 -> Constantes.PRECIOS[2]; // PLATEA ALTA
+                    case 8, 9 -> Constantes.PRECIOS[3]; // PALCO
                     default -> precioCategoria;
                 };
 
                 if (esMenorDeEdad) {
-                    descuentoAplicado = DESCUENTO_MENOR_DE_EDAD;
+                    descuentoAplicado = Constantes.DESCUENTO_MENOR_DE_EDAD;
                     precioFinal = precioCategoria - (precioCategoria * descuentoAplicado / 100);
                 } else if (esTerceraEdad) {
-                    descuentoAplicado = DESCUENTO_TERCERA_EDAD;
+                    descuentoAplicado = Constantes.DESCUENTO_TERCERA_EDAD;
                     precioFinal = precioCategoria - (precioCategoria * descuentoAplicado / 100);
                 } else {
                     precioFinal = precioCategoria;
@@ -282,9 +242,9 @@ public class Sistema_Para_Venta_De_Entradas {
 
                 // Mostramos un resumen de la transacción.
                 System.out.println(":::: Resumen de la transacción ::::");
-                System.out.println("Ubicación del asiento:" + ESPACIO + asientoElegido);
-                System.out.println("Precio base de la entrada:" + ESPACIO + formatoCLP.format(precioCategoria));
-                System.out.println("Descuento aplicado:" + ESPACIO + descuentoAplicado + "%");
+                System.out.println("Ubicación del asiento:" + Constantes.ESPACIO + asientoElegido);
+                System.out.println("Precio base de la entrada:" + Constantes.ESPACIO + formatoCLP.format(precioCategoria));
+                System.out.println("Descuento aplicado:" + Constantes.ESPACIO + descuentoAplicado + "%");
                 System.out.println("Precio final a pagar: " + formatoCLP.format(precioFinal));
 
                 // Limpiamos los valores para una próxima compra.
@@ -294,14 +254,14 @@ public class Sistema_Para_Venta_De_Entradas {
 
                 // ::::::::::::::: PASO 4 :::::::::::::::
 
-                System.out.println(ESPACIO);
-                System.out.println(TEXTO_PASO4);
+                System.out.println(Constantes.ESPACIO);
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO4);
 
-                for (int indice = 0; indice < OPCIONES_PASO4.length; indice++) {
+                for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO4.length; indice++) {
                     System.out.println((indice + 1)
-                            + PUNTO
-                            + ESPACIO
-                            + OPCIONES_PASO4[indice]);
+                            + Constantes.PUNTO
+                            + Constantes.ESPACIO
+                            + Constantes.Opciones.OPCIONES_PASO4[indice]);
                 }
 
                 do {
@@ -309,15 +269,15 @@ public class Sistema_Para_Venta_De_Entradas {
                         opcionElegida = ENTRADA.nextInt();
                         volverAComprar = opcionElegida == 1;
                         volverAlMenu = opcionElegida == 2;
-                        puedeAvanzar = opcionElegida > 0 && opcionElegida <= OPCIONES_PASO4.length;
+                        puedeAvanzar = opcionElegida > 0 && opcionElegida <= Constantes.Opciones.OPCIONES_PASO4.length;
                     } else {
                         ENTRADA.next();
                     }
-                    if (!puedeAvanzar) {  System.out.println(ERROR_OPCION_INCORRECTA); }
+                    if (!puedeAvanzar) {  System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA); }
                 } while (!puedeAvanzar);
             } while (volverAComprar);
         } while (volverAlMenu);
 
-        System.out.println(TEXTO_SALIDA);
+        System.out.println(Constantes.Instrucciones.TEXTO_SALIDA);
     }
 }
