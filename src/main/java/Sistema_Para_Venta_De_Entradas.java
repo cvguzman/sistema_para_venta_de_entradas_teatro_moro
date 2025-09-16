@@ -23,9 +23,8 @@ public class Sistema_Para_Venta_De_Entradas {
         // ::::::::::::::: VARIABLES :::::::::::::::
 
         int opcionElegida;
-        boolean esMenorDeEdad = false;
-        boolean esTerceraEdad = false;
         boolean puedeAvanzar = false;
+        boolean esEstudiante = false;
         boolean volverAComprar = false;
         boolean volverAlMenu = false;
         String[][] grupoColumnas = {
@@ -45,6 +44,7 @@ public class Sistema_Para_Venta_De_Entradas {
 
         final var scanner = new Scanner(System.in);
         final var gestorDeAsientos = new GestorDeAsientos(TEATRO_FILAS, grupoColumnas);
+        final var pasarelaDePago = new PasarelaDePago();
 
         // ::::::::::::::: VARIABLES DE CLASE :::::::::::::::
 
@@ -115,6 +115,7 @@ public class Sistema_Para_Venta_De_Entradas {
                         puedeAvanzar = gestorDeAsientos.validarAsiento(scanner.nextLine().trim().toUpperCase());
                     } else {
                         scanner.nextLine();
+                        puedeAvanzar = false;
                     }
                     if (!puedeAvanzar) {
                         System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
@@ -123,61 +124,60 @@ public class Sistema_Para_Venta_De_Entradas {
 
                 // ::::::::::::::: PASO 3 :::::::::::::::
 
-                System.out.println(Constantes.Instrucciones.TEXTO_PASO3);
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO3_A);
 
                 do {
                     if (scanner.hasNextInt()) {
                         opcionElegida = scanner.nextInt();
                         scanner.nextLine();
-                        if (opcionElegida >= 12 && opcionElegida < 18) {
-                            esMenorDeEdad = true;
-                        } else if (opcionElegida >= 60 && opcionElegida < 100) {
-                            esTerceraEdad = true;
-                        }
-                        puedeAvanzar = opcionElegida >= 12 && opcionElegida < 100;
+                        // Validamos edad por si aplica descuento.
+                        puedeAvanzar = pasarelaDePago.validarDescuento(opcionElegida);
                     } else {
                         scanner.next();
+                        puedeAvanzar = false;
                     }
                     if (!puedeAvanzar) {
                         System.out.println(Constantes.Errores.ERROR_EDAD_INVALIDA);
                     }
                 } while (!puedeAvanzar);
 
+                // Preguntamos si el cliente es estudiante
 
-                // Calculamos el precio de la entrada según su categoría y descuento asociado;
-                int precioCategoria = 0;
-                int descuentoAplicado = 0;
-                int precioFinal;
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO3_B);
 
-                precioCategoria = switch (gestorDeAsientos.indiceDeFila) {
-                    case 0, 1 -> Constantes.PRECIOS[0]; // VIP
-                    case 2, 3 -> Constantes.PRECIOS[1]; // PLATEA BAJA
-                    case 4, 5, 6, 7 -> Constantes.PRECIOS[2]; // PLATEA ALTA
-                    case 8, 9 -> Constantes.PRECIOS[3]; // PALCO
-                    default -> precioCategoria;
-                };
-
-                if (esMenorDeEdad) {
-                    descuentoAplicado = Constantes.DESCUENTO_MENOR_DE_EDAD;
-                    precioFinal = precioCategoria - (precioCategoria * descuentoAplicado / 100);
-                } else if (esTerceraEdad) {
-                    descuentoAplicado = Constantes.DESCUENTO_TERCERA_EDAD;
-                    precioFinal = precioCategoria - (precioCategoria * descuentoAplicado / 100);
-                } else {
-                    precioFinal = precioCategoria;
+                for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO3.length; indice++) {
+                    System.out.println((indice + 1)
+                            + Constantes.PUNTO
+                            + Constantes.ESPACIO
+                            + Constantes.Opciones.OPCIONES_PASO3[indice]);
                 }
+
+                do {
+                    if (scanner.hasNextInt()) {
+                        opcionElegida = scanner.nextInt();
+                        scanner.nextLine();
+                        esEstudiante = opcionElegida == 1;
+                        puedeAvanzar = opcionElegida == 1 || opcionElegida == 2;
+                    } else {
+                        scanner.next();
+                        puedeAvanzar = false;
+                    }
+                    if (!puedeAvanzar) {
+                        System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA);
+                    }
+                } while (!puedeAvanzar);
+
+                pasarelaDePago.realizarCompra(gestorDeAsientos.indiceDeFila, esEstudiante);
+
+                // Limpiamos los valores para una próxima compra.
+                esEstudiante = false;
 
                 // Mostramos un resumen de la transacción.
                 System.out.println(":::: Resumen de la transacción ::::");
                 System.out.println("Ubicación del asiento:" + Constantes.ESPACIO + gestorDeAsientos.asientoElegido);
-                System.out.println("Precio base de la entrada:" + Constantes.ESPACIO + formatoCLP.format(precioCategoria));
-                System.out.println("Descuento aplicado:" + Constantes.ESPACIO + descuentoAplicado + "%");
-                System.out.println("Precio final a pagar: " + formatoCLP.format(precioFinal));
-
-                // Limpiamos los valores para una próxima compra.
-                esMenorDeEdad = false;
-                esTerceraEdad = false;
-
+                System.out.println("Precio base de la entrada:" + Constantes.ESPACIO + formatoCLP.format(pasarelaDePago.precioCategoria));
+                System.out.println("Descuento aplicado:" + Constantes.ESPACIO + pasarelaDePago.descuentoAplicado + "%");
+                System.out.println("Precio final a pagar: " + formatoCLP.format(pasarelaDePago.precioFinal));
 
                 // ::::::::::::::: PASO 4 :::::::::::::::
 

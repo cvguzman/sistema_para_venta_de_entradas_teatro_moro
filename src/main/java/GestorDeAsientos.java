@@ -24,7 +24,6 @@ public class GestorDeAsientos {
                 int columnaElegida = Integer.parseInt(asiento.substring(1));
 
                 if (columnaElegida > 10 || columnaElegida < 1) {
-                    System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
                     return false;
                 }
 
@@ -45,8 +44,11 @@ public class GestorDeAsientos {
                         asientosReservados.add(asiento);
                         break;
                     } else {
-                       return  false;
+                        asientoValido = false;
                     }
+                }
+                if (asientoValido) {
+                    asientoElegido = asiento;
                 }
                 return asientoValido;
             } catch(Exception error) {
