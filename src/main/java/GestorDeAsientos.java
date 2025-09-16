@@ -58,4 +58,15 @@ public class GestorDeAsientos {
             return false;
         }
     }
+
+    public boolean eliminarReserva(String asiento) {
+        // Validamos que la fila elegida se encuentre dentro de nuestro arreglo correspondiente.
+        for (int indice = 0; indice < asientosReservados.size(); indice++) {
+            if (asientosReservados.contains(String.valueOf(asiento))) {
+                asientosReservados.remove(asiento);
+                return true;
+            }
+        }
+        return false;
+    }
 }

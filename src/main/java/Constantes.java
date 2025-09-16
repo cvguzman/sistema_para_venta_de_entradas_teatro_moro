@@ -11,18 +11,20 @@ public class Constantes {
         public static final String TEXTO_PASO3_A = "Ingrese su edad:";
         public static final String TEXTO_PASO3_B = "¿Es usted estudiante?";
         public static final String TEXTO_PASO4 = "¿Desea realizar otra compra? Seleccione una opción ingresando su número:";
-        public static final String TEXTO_SALIDA = "Gracias por su compra, disfrute de la función.";
+        public static final String TEXTO_COMPRA_FINALIZADA = "Gracias por su compra, disfrute de la función.";
 
         public static final String TEXTO_PROMOCIONES = """
                 ::::::: PROMOCIONES :::::::
-                - 10% para estudiantes (desde los 12, hasta 17 años).
-                - 15% para tercera edad (desde los 60 años).
+                - 10% para estudiantes.
+                - 15% para tercera edad (desde los 65 años).
                 - Lleva 3 entradas por el precio de 2.
                 """;
         public static final String TEXTO_ELIMINACION = """
                 ::::::: ELIMINACION DE ENTRADAS :::::::
                 Elimine un asiento ingresando la letra de la fila y el número de la columna:
                 """;
+        public static final String TEXTO_ELIMINACION_EXITO = "Asiento eliminado con exito.\n";
+        public static final String TEXTO_ELIMINACION_SALIDA = "Todas tus reservas fueron eliminadas.\n";
     }
 
     public class Opciones {
