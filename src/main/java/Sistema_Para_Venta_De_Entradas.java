@@ -24,7 +24,6 @@ public class Sistema_Para_Venta_De_Entradas {
 
         int opcionElegida;
         boolean puedeAvanzar = false;
-        boolean esEstudiante = false;
         boolean volverAComprar = false;
         boolean volverAlMenu = false;
         String[][] grupoColumnas = {
@@ -52,184 +51,77 @@ public class Sistema_Para_Venta_De_Entradas {
         NumberFormat formatoCLP = NumberFormat.getCurrencyInstance(chile);
 
         do {
-            // ::::::::::::::: PASO 1 :::::::::::::::
             // :::::::::::::::  MENU  :::::::::::::::
             System.out.println(Constantes.Instrucciones.TEXTO_INICIO);
             System.out.println(Constantes.ESPACIO);
 
-            System.out.println(Constantes.Instrucciones.TEXTO_PASO1);
+            // :::::::::::::::  COMPRA DE ENTRADAS  :::::::::::::::
+            // Punto de partida por cada iteración de compra.
+            do {
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO2);
 
-            for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO1.length; indice++) {
-                System.out.println((indice + 1)
-                        + Constantes.PUNTO
-                        + Constantes.ESPACIO
-                        + Constantes.Opciones.OPCIONES_PASO1[indice]);
-            }
+                // Dibujamos el mapa del teatro.
+                DibujadorDeMapa.dibujarMapa(TEATRO_FILAS, grupoColumnas);
 
-            if (scanner.hasNextInt()) {
-                opcionElegida = scanner.nextInt();
+                System.out.println("Ingrese asiento (ej: B5):");
 
-                switch (opcionElegida) {
-                    case 1:
-                        // :::::::::::::::  COMPRA DE ENTRADAS  :::::::::::::::
-                        // Punto de partida por cada iteración de compra.
-                        do {
-                            // ::::::::::::::: PASO 2 :::::::::::::::
+                // Validamos el asiento elegido.
+                do {
+                    if (scanner.hasNextLine()) {
+                        puedeAvanzar = gestorDeAsientos.validarAsiento(scanner.nextLine().trim().toUpperCase());
+                    } else {
+                        scanner.nextLine();
+                        puedeAvanzar = false;
+                    }
+                    if (!puedeAvanzar) {
+                        System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
+                    }
+                } while (!puedeAvanzar);
 
-                            System.out.println(Constantes.Instrucciones.TEXTO_PASO2);
+                System.out.println(Constantes.Instrucciones.TEXTO_RESERVA_EXITOSA.formatted(gestorDeAsientos.asientoElegido));
 
-                            // Dibujamos el mapa del teatro.
-                            DibujadorDeMapa.dibujarMapa(TEATRO_FILAS, grupoColumnas);
+                // ::::::::::::::: VALIDACION DE RESERVA :::::::::::::::
+                // Preguntamos si desea realizar otra reserva ó proceder a la compra.
 
-                            System.out.println("Ingrese asiento (ej: B5):");
-                            scanner.nextLine();
+                System.out.println(Constantes.ESPACIO);
+                System.out.println(Constantes.Instrucciones.TEXTO_PASO3);
 
-                            // Validamos el asiento elegido.
-                            do {
-                                if (scanner.hasNextLine()) {
-                                    puedeAvanzar = gestorDeAsientos.validarAsiento(scanner.nextLine().trim().toUpperCase());
-                                } else {
-                                    scanner.nextLine();
-                                    puedeAvanzar = false;
-                                }
-                                if (!puedeAvanzar) {
-                                    System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
-                                }
-                            } while (!puedeAvanzar);
-
-                            // ::::::::::::::: PASO 3 :::::::::::::::
-
-                            System.out.println(Constantes.Instrucciones.TEXTO_PASO3_A);
-
-                            do {
-                                if (scanner.hasNextInt()) {
-                                    opcionElegida = scanner.nextInt();
-                                    scanner.nextLine();
-                                    // Validamos edad por si aplica descuento.
-                                    puedeAvanzar = pasarelaDePago.validarDescuento(opcionElegida);
-                                } else {
-                                    scanner.next();
-                                    puedeAvanzar = false;
-                                }
-                                if (!puedeAvanzar) {
-                                    System.out.println(Constantes.Errores.ERROR_EDAD_INVALIDA);
-                                }
-                            } while (!puedeAvanzar);
-
-                            // Preguntamos si el cliente es estudiante
-
-                            System.out.println(Constantes.Instrucciones.TEXTO_PASO3_B);
-
-                            for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO3.length; indice++) {
-                                System.out.println((indice + 1)
-                                        + Constantes.PUNTO
-                                        + Constantes.ESPACIO
-                                        + Constantes.Opciones.OPCIONES_PASO3[indice]);
-                            }
-
-                            do {
-                                if (scanner.hasNextInt()) {
-                                    opcionElegida = scanner.nextInt();
-                                    scanner.nextLine();
-                                    esEstudiante = opcionElegida == 1;
-                                    puedeAvanzar = opcionElegida == 1 || opcionElegida == 2;
-                                } else {
-                                    scanner.next();
-                                    puedeAvanzar = false;
-                                }
-                                if (!puedeAvanzar) {
-                                    System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA);
-                                }
-                            } while (!puedeAvanzar);
-
-                            pasarelaDePago.realizarCompra(gestorDeAsientos.indiceDeFila, esEstudiante);
-
-                            // Limpiamos los valores para una próxima compra.
-                            esEstudiante = false;
-
-                            // Mostramos un resumen de la transacción.
-                            System.out.println(":::: Resumen de la transacción ::::");
-                            System.out.println("Ubicación del asiento:" + Constantes.ESPACIO + gestorDeAsientos.asientoElegido);
-                            System.out.println("Precio base de la entrada:" + Constantes.ESPACIO + formatoCLP.format(pasarelaDePago.precioCategoria));
-                            System.out.println("Descuento aplicado:" + Constantes.ESPACIO + pasarelaDePago.descuentoAplicado + "%");
-                            System.out.println("Precio final a pagar: " + formatoCLP.format(pasarelaDePago.precioFinal));
-
-                            // ::::::::::::::: PASO 4 :::::::::::::::
-
-                            System.out.println(Constantes.ESPACIO);
-                            System.out.println(Constantes.Instrucciones.TEXTO_PASO4);
-
-                            for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO4.length; indice++) {
-                                System.out.println((indice + 1)
-                                        + Constantes.PUNTO
-                                        + Constantes.ESPACIO
-                                        + Constantes.Opciones.OPCIONES_PASO4[indice]);
-                            }
-
-                            do {
-                                if (scanner.hasNextInt()) {
-                                    opcionElegida = scanner.nextInt();
-                                    volverAComprar = opcionElegida == 1;
-                                    volverAlMenu = opcionElegida == 2;
-                                    puedeAvanzar = opcionElegida > 0 && opcionElegida <= Constantes.Opciones.OPCIONES_PASO4.length;
-                                } else {
-                                    scanner.next();
-                                }
-                                if (!puedeAvanzar) {  System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA); }
-                            } while (!puedeAvanzar);
-                        } while (volverAComprar);
-                        System.out.println(Constantes.Instrucciones.TEXTO_COMPRA_FINALIZADA);
-                        System.out.println(Constantes.ESPACIO);
-                        break;
-                    case 2:
-                        // :::::::::::::::  PROMOCIONES  :::::::::::::::
-                        System.out.println(Constantes.Instrucciones.TEXTO_PROMOCIONES);
-                        break;
-                    case 3:
-                        // :::::::::::::::  ELIMINAR RESERVA  :::::::::::::::
-                        do {
-                            if (gestorDeAsientos.asientosReservados.size() > 0) {
-                                System.out.println(Constantes.Instrucciones.TEXTO_ELIMINACION);
-
-                                for (String asiento: gestorDeAsientos.asientosReservados) {
-                                    System.out.println("-" + Constantes.ESPACIO + asiento);
-                                }
-
-                                do {
-                                    if (scanner.hasNextLine()) {
-                                        puedeAvanzar = gestorDeAsientos.eliminarReserva(scanner.nextLine().trim().toUpperCase());
-                                    } else {
-                                        scanner.nextLine();
-                                        puedeAvanzar = false;
-                                    }
-                                    if (!puedeAvanzar) {
-                                        System.out.println(Constantes.Errores.ERROR_ASIENTO_INVALIDO);
-                                    }
-                                } while (!puedeAvanzar);
-
-                                if (gestorDeAsientos.asientosReservados.isEmpty()) {
-                                    System.out.println(Constantes.Instrucciones.TEXTO_ELIMINACION_SALIDA);
-                                    volverAlMenu = true;
-                                } else {
-                                    System.out.println(Constantes.Instrucciones.TEXTO_ELIMINACION_EXITO);
-                                    volverAlMenu = false;
-                                }
-                            } else {
-                                System.out.println(Constantes.Errores.ERROR_SIN_ASIENTOS_RESERVADOS);
-                                volverAlMenu = true;
-                            }
-                        } while (!volverAlMenu);
-                        break;
-                    default:
-                        // Opción de Salir termina el programa.
-                        return;
+                for (int indice = 0; indice < Constantes.Opciones.OPCIONES_PASO4.length; indice++) {
+                    System.out.println((indice + 1)
+                            + Constantes.PUNTO
+                            + Constantes.ESPACIO
+                            + Constantes.Opciones.OPCIONES_PASO4[indice]);
                 }
-                volverAlMenu = opcionElegida > 0 && opcionElegida <= Constantes.Opciones.OPCIONES_PASO1.length;
-            } else {
-                scanner.next();
-                System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA);
-                volverAlMenu = true;
-            }
+
+                do {
+                    if (scanner.hasNextInt()) {
+                        opcionElegida = scanner.nextInt();
+                        volverAComprar = opcionElegida == 1;
+                        puedeAvanzar = opcionElegida > 0 && opcionElegida <= Constantes.Opciones.OPCIONES_PASO4.length;
+                        if (opcionElegida == 3) {
+                            pasarelaDePago.realizarCompra(gestorDeAsientos.indiceDeFila);
+                            volverAlMenu = false;
+                        }
+
+                    } else {
+                        scanner.next();
+                    }
+                    if (!puedeAvanzar) {  System.out.println(Constantes.Errores.ERROR_OPCION_INCORRECTA); }
+                } while (!puedeAvanzar);
+            } while (volverAComprar);
         } while (volverAlMenu);
+
+        // ::::::::::::::: IMPRIMIR RECIBO :::::::::::::::
+        // Mostramos un resumen de la transacción.
+
+        System.out.println(":::: Resumen de la transacción ::::");
+        System.out.println("Ubicación del asiento:" + Constantes.ESPACIO + gestorDeAsientos.asientoElegido);
+        System.out.println("Precio base de la entrada:" + Constantes.ESPACIO + formatoCLP.format(pasarelaDePago.precioCategoria));
+        System.out.println("Precio final a pagar: " + formatoCLP.format(pasarelaDePago.precioFinal));
+        System.out.println(Constantes.ESPACIO);
+        System.out.println(Constantes.Instrucciones.TEXTO_COMPRA_FINALIZADA);
+        System.out.println(Constantes.ESPACIO);
+
+        scanner.close();
     }
 }
