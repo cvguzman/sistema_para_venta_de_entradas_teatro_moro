@@ -4,9 +4,9 @@ public class GestorDeAsientos {
     private String[] teatroFilas;
     private String[][] teatroColumnas;
 
-    public int indiceDeFila = 0;
     public String asientoElegido;
-    public ArrayList<String> asientosReservados = new ArrayList<>();
+    public String asientoEliminado;
+    public ArrayList<String> asientosReservados = new ArrayList<String>();
 
     // Constructor
     public GestorDeAsientos(String[] teatroFilas, String[][] teatroColumnas) {
@@ -37,11 +37,10 @@ public class GestorDeAsientos {
                             asientoValido = false;
                         } else {
                             teatroColumnas[indice][columnaElegida - 1] = Constantes.ASIENTO_NO_DISPONIBLE;
-                            // Guardamos el indice de la fila para luego conseguir su precio correspondiente.
-                            indiceDeFila = indice;
+                            // Guardamos el asiento para luego conseguir su precio correspondiente.
+                            asientosReservados.add(asiento);
                             asientoValido = true;
                         }
-                        asientosReservados.add(asiento);
                         break;
                     } else {
                         asientoValido = false;
@@ -59,14 +58,36 @@ public class GestorDeAsientos {
         }
     }
 
+    public void limpiarReservas() {
+        for (String asiento: asientosReservados) {
+            intercambiarEstadoDeReserva(asiento);
+        }
+        asientosReservados = new ArrayList<String>();
+    }
+
     public boolean eliminarReserva(String asiento) {
         // Validamos que la fila elegida se encuentre dentro de nuestro arreglo correspondiente.
         for (int indice = 0; indice < asientosReservados.size(); indice++) {
             if (asientosReservados.contains(String.valueOf(asiento))) {
                 asientosReservados.remove(asiento);
+                asientoEliminado = asiento;
+                intercambiarEstadoDeReserva(asiento);
                 return true;
             }
         }
         return false;
+    }
+
+    // Creado para cambiar una reserva ocupada a estado desocupado.
+    private void intercambiarEstadoDeReserva(String asiento) {
+        // Separamos asiento elegido en dos elementos (Letra asociada a una fila y número de columna)
+        char filaElegida = asiento.charAt(0);
+        int columnaElegida = Integer.parseInt(asiento.substring(1));
+
+        for (int indice = 0; indice < teatroFilas.length; indice++) {
+            if (teatroFilas[indice].equals(String.valueOf(filaElegida))) {
+                teatroColumnas[indice][columnaElegida - 1] = Constantes.ASIENTO_DISPONIBLE;
+            }
+        }
     }
 }

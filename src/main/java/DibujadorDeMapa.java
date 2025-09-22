@@ -26,10 +26,10 @@ public class DibujadorDeMapa {
             }
             // Validamos para agregar la categoría asociada a la fila.
             filaCompleta = switch (indice) {
-                case 0, 1 -> filaCompleta + Constantes.ESPACIO +         "|      V.I.P.       |";
-                case 2, 3 -> filaCompleta + Constantes.ESPACIO +         "| PLATEA BAJA |";
-                case 4, 5, 6, 7 -> filaCompleta + Constantes.ESPACIO + "| PLATEA ALTA |";
-                case 8, 9 -> filaCompleta + Constantes.ESPACIO +         "|     PALCO      |";
+                case 0, 1 -> filaCompleta + Constantes.ESPACIO +         "|   V.I.P. = $35.000 ";
+                case 2, 3 -> filaCompleta + Constantes.ESPACIO +         "| PLATEA BAJA = $25.000 ";
+                case 4, 5, 6, 7 -> filaCompleta + Constantes.ESPACIO + "| PLATEA ALTA = $15.000 ";
+                case 8, 9 -> filaCompleta + Constantes.ESPACIO +         "| PALCO = $11.000 ";
                 default -> filaCompleta;
             };
             System.out.println(filaCompleta);
