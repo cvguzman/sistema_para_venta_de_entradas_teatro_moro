@@ -3,7 +3,7 @@ import  java.util.TimerTask;
 
 public class Temporizador {
     private Timer timer;
-    private final long tiempoLimite = 1*60*1000;
+    private final long tiempoLimite = 2*60*1000;
     public boolean tiempoAgotado = false;
 
     public void iniciar() {
